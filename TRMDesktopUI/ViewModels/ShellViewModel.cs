@@ -8,5 +8,14 @@ namespace TRMDesktopUI.ViewModels
 {
     public class ShellViewModel
     {
+        #region DI test w/ Calculations
+        //// testing Dependency Injection via simple class
+        //private ICalculations _calculations;
+
+        //public ShellViewModel(ICalculations calculations)
+        //{
+        //    _calculations = calculations;
+        //}
+        #endregion
     }
 }

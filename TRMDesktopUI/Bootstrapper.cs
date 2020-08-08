@@ -25,6 +25,12 @@ namespace TRMDesktopUI
                 .Singleton<IWindowManager, WindowManager>()
                 .Singleton<IEventAggregator, EventAggregator>();
 
+            #region DI test w/ Calculations
+            //// testing DI with a simple class PerRequest as opposed to Singleton
+            //_container
+            //    .PerRequest<ICalculations, Calculations>();
+            #endregion
+
             GetType().Assembly.GetTypes()
                 .Where(type => type.IsClass)
                 .Where(type => type.Name.EndsWith("ViewModel"))
