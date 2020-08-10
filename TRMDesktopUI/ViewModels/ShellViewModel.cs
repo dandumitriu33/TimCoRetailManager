@@ -12,20 +12,19 @@ namespace TRMDesktopUI.ViewModels
     {
         private IEventAggregator _events;
         private SalesViewModel _salesVM;
-        private SimpleContainer _container;
 
         public ShellViewModel(IEventAggregator events,
-                              SalesViewModel salesVM,
-                              SimpleContainer container)
+                              SalesViewModel salesVM
+                              )
         {
             _events = events;
             _salesVM = salesVM;
-            _container = container;
 
             _events.Subscribe(this);
 
             // when deactivated the log in form will go away 
-            ActivateItem(_container.GetInstance<LoginViewModel>());
+            // IoC is a thing Caliburn Micro brings in anyway, _container was too much
+            ActivateItem(IoC.Get<LoginViewModel>());
         }
 
         public void Handle(LogOnEvent message)
