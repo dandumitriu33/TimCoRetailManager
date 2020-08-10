@@ -116,18 +116,24 @@ namespace TRMDesktopUI.ViewModels
             // in config the tax rate is a percentage w/o the % sign
             decimal taxRate = _configHelper.GetTaxRate() / 100;
 
-            foreach (var item in Cart)
-            {
-                if (item.Product.IsTaxable)
-                {
-                    // as decimal calculation is over 2 decimals, this result will be different
-                    // depending on where we format
-                    // this is a question for the business owner
-                    // possibly on every product tax amount that gets added to the others
-                    // what Tim did here is confusing
-                    taxAmount += item.Product.RetailPrice * item.QuantityInCart * taxRate;
-                }
-            }
+            //// SIMPLER VERSION BELOW
+            //foreach (var item in Cart)
+            //{
+            //    if (item.Product.IsTaxable)
+            //    {
+            //        // as decimal calculation is over 2 decimals, this result will be different
+            //        // depending on where we format
+            //        // this is a question for the business owner
+            //        // possibly on every product tax amount that gets added to the others
+            //        // what Tim did here is confusing
+            //        taxAmount += item.Product.RetailPrice * item.QuantityInCart * taxRate;
+            //    }
+            //}
+
+            // SIMPLER VERSION
+            taxAmount = Cart
+                .Where(x => x.Product.IsTaxable)
+                .Sum(x => x.Product.RetailPrice * x.QuantityInCart * taxRate);
 
             return taxAmount;
         }
