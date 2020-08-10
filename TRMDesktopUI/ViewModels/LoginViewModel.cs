@@ -12,8 +12,9 @@ namespace TRMDesktopUI.ViewModels
 {
     public class LoginViewModel : Screen
     {
-        private string _userName;
-        private string _password;
+        // this is only in dev, never in prod, also different databases
+        private string _userName = "admin@timco.com";
+        private string _password = "Pwd12.";
         private IAPIHelper _apiHelper;
         private IEventAggregator _events;
 
