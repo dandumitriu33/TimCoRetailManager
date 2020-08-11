@@ -9,12 +9,13 @@
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="_File" FontSize="18">
-                
+                <MenuItem x:Name="ExitApplication" Header="E_xit" FontSize="18" />
             </MenuItem>
-            <MenuItem Header="_Account" FontSize="18">
-                <MenuItem x:Name="LoginScreen" Header="_Login" FontSize="18">
-                    
-                </MenuItem>
+            <MenuItem Header="_Account" FontSize="18"
+                      Visibility="{Binding IsLoggedIn, Converter={StaticResource BooleanToVisibilityConverter}, FallbackValue=Collapsed}">
+                <MenuItem x:Name="LogOut" Header="_Log Out" FontSize="18" />
+
+
             </MenuItem>
         </Menu>
         <Grid>
