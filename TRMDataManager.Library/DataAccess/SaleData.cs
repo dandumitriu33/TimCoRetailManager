@@ -53,22 +53,41 @@ namespace TRMDataManager.Library.DataAccess
                 CashierId = cashierId
             };
             sale.Total = sale.SubTotal + sale.Tax;
-
-            // save the sale model
-            SqlDataAccess sql = new SqlDataAccess();
-
-            sql.SaveData("dbo.spSale_Insert", sale, "TRMData");
-
-            // get the id from the sale model
-            sale.Id = sql.LoadData<int, dynamic>("spSale_Lookup", new {CashierId = sale.CashierId, SaleDate = sale.SaleDate }, "TRMData").FirstOrDefault();
-
-            // finish filling in the sale detail models
-            foreach (var item in details)
+          
+            // C# TRANSACTIONS ---- NOT SQL (use very rarely or not at all)
+            // open transactions = bad for memory and more
+            // prefferably SQL will handle the transaction
+            using (SqlDataAccess sql = new SqlDataAccess())
             {
-                item.SaleId = sale.Id;
-                // save the sale detail models
-                sql.SaveData("dbo.spSaleDetail_Insert", item, "TRMData");
+                try
+                {
+                    sql.StartTransaction("TRMData");
+
+                    // save the sale model
+                    sql.SaveDataInTransaction("dbo.spSale_Insert", sale);
+
+                    // get the id from the sale model
+                    sale.Id = sql.LoadDataInTransaction<int, dynamic>("spSale_Lookup", new { CashierId = sale.CashierId, SaleDate = sale.SaleDate }).FirstOrDefault();
+
+                    // finish filling in the sale detail models
+                    foreach (var item in details)
+                    {
+                        item.SaleId = sale.Id;
+                        // save the sale detail models
+                        sql.SaveDataInTransaction("dbo.spSaleDetail_Insert", item);
+                    }
+
+                    sql.CommitTransaction();
+                }
+                catch
+                {
+                    sql.RollbackTransaction();
+                    throw;
+                }
             }
+                
+
+            
         }
     }
 }
