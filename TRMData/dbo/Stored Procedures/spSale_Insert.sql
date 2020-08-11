@@ -7,9 +7,9 @@
 	@Total money
 AS
 BEGIN
-	set NOCOUNT ON;
+	SET NOCOUNT ON;
 	INSERT INTO dbo.Sale(CashierId, SaleDate, SubTotal, Tax, Total)
 	values (@CashierId, @SaleDate, @SubTotal, @Tax, @Total);
 
-	SELECT @Id = @@Identity;
+	SELECT @Id = Scope_Identity();
 END
