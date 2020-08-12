@@ -12,12 +12,15 @@ namespace TRMDataManager.Controllers
     [Authorize]
     public class InventoryController : ApiController
     {
+        [Authorize(Roles = "Manager,Admin")] //???
         public List<InventoryModel> Get()
         {
             InventoryData data = new InventoryData();
             return data.GetInventory();
-        } 
+        }
 
+        //[Authorize(Roles = "WarehouseWorker")]  // you have to be both to post in this situation, the AND relationship (, = OR)
+        [Authorize(Roles = "Admin")]
         public void Post(InventoryModel item)
         {
             InventoryData data = new InventoryData();

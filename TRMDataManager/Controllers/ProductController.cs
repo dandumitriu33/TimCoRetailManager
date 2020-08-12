@@ -9,7 +9,9 @@ using TRMDataManager.Library.Models;
 
 namespace TRMDataManager.Controllers
 {
-    [Authorize]
+    //[Authorize(Roles = "Cashier,Admin")] // , for multiple roles
+    //[Authorize(Roles = "Cashier,Manager,Admin")] // alternate way is to give that user the Cashier role along side Manager or Admin
+    [Authorize(Roles = "Cashier")] // Leaving Cashier for now like Tim
     public class ProductController : ApiController
     {
         public List<ProductModel> Get()
