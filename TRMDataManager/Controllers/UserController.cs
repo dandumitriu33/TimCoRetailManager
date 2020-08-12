@@ -55,81 +55,48 @@ namespace TRMDataManager.Controllers
             }
 
             return output;
-            
+
         }
 
-        #region other methods wiped by Tim
-        //// GET: User
-        //public ActionResult Index()
-        //{
-        //    return View();
-        //}
+        [Authorize(Roles = "Admin")]
+        [HttpGet]
+        [Route("api/User/Admin/GetAllRoles")]
+        public Dictionary<string, string> GetAllRoles()
+        {
+            using (var context = new ApplicationDbContext())
+            {
+                var roles = context.Roles.ToDictionary(x => x.Id, x => x.Name);
+                return roles;
+            }
+        }
 
-        //// GET: User/Create
-        //public ActionResult Create()
-        //{
-        //    return View();
-        //}
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        [Route("api/User/Admin/AddRole")]
+        public void AddRole(UserRolePairModel pairing)
+        {
+            using (var context = new ApplicationDbContext())
+            {
+                var userStore = new UserStore<ApplicationUser>(context);
+                var userManager = new UserManager<ApplicationUser>(userStore);
 
-        //// POST: User/Create
-        //[HttpPost]
-        //public ActionResult Create(FormCollection collection)
-        //{
-        //    try
-        //    {
-        //        // TODO: Add insert logic here
+                userManager.AddToRole(pairing.UserId, pairing.RoleName);
+            }
+        }
 
-        //        return RedirectToAction("Index");
-        //    }
-        //    catch
-        //    {
-        //        return View();
-        //    }
-        //}
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        [Route("api/User/Admin/RemoveRole")]
+        public void RemoveRole(UserRolePairModel pairing)
+        {
+            using (var context = new ApplicationDbContext())
+            {
+                var userStore = new UserStore<ApplicationUser>(context);
+                var userManager = new UserManager<ApplicationUser>(userStore);
 
-        //// GET: User/Edit/5
-        //public ActionResult Edit(int id)
-        //{
-        //    return View();
-        //}
+                userManager.RemoveFromRole(pairing.UserId, pairing.RoleName);
+            }
+        }
 
-        //// POST: User/Edit/5
-        //[HttpPost]
-        //public ActionResult Edit(int id, FormCollection collection)
-        //{
-        //    try
-        //    {
-        //        // TODO: Add update logic here
-
-        //        return RedirectToAction("Index");
-        //    }
-        //    catch
-        //    {
-        //        return View();
-        //    }
-        //}
-
-        //// GET: User/Delete/5
-        //public ActionResult Delete(int id)
-        //{
-        //    return View();
-        //}
-
-        //// POST: User/Delete/5
-        //[HttpPost]
-        //public ActionResult Delete(int id, FormCollection collection)
-        //{
-        //    try
-        //    {
-        //        // TODO: Add delete logic here
-
-        //        return RedirectToAction("Index");
-        //    }
-        //    catch
-        //    {
-        //        return View();
-        //    }
-        //}
-        #endregion
     }
 }
