@@ -14,18 +14,15 @@ namespace TRMDesktopUI.ViewModels
     public class ShellViewModel : Conductor<object>, IHandle<LogOnEvent>
     {
         private IEventAggregator _events;
-        private SalesViewModel _salesVM;
         private ILoggedInUserModel _user;
         private readonly IAPIHelper _apiHelper;
 
         public ShellViewModel(IEventAggregator events,
-                              SalesViewModel salesVM,
                               ILoggedInUserModel user,
                               IAPIHelper apiHelper
                               )
         {
             _events = events;
-            _salesVM = salesVM;
             _user = user;
             _apiHelper = apiHelper;
             _events.SubscribeOnPublishedThread(this);
@@ -70,23 +67,11 @@ namespace TRMDesktopUI.ViewModels
             NotifyOfPropertyChange(() => IsLoggedIn);
         }
 
-        //public void Handle(LogOnEvent message)
-        //{
-        //    ActivateItem(_salesVM);
-        //    NotifyOfPropertyChange(() => IsLoggedIn);
-
-        //    //// if _loginVM was Dependency Injected to remember already filled in data
-        //    //// more useful for a cart
-        //    //_loginVM = _container.GetInstance<LoginViewModel>();
-        //}
-
         public async Task HandleAsync(LogOnEvent message, CancellationToken cancellationToken)
         {
-            await ActivateItemAsync(_salesVM, cancellationToken);
+            await ActivateItemAsync(IoC.Get<SalesViewModel>(), cancellationToken);
             NotifyOfPropertyChange(() => IsLoggedIn);
         }
-
-
 
         #region DI test w/ Calculations
         //// testing Dependency Injection via simple class
