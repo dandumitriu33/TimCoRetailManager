@@ -25,12 +25,12 @@ namespace TRMApi.Controllers
         private readonly ApplicationDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly IUserData _userData;
-        private readonly ILogger _logger;
+        private readonly ILogger<UserController> _logger;
 
         public UserController(ApplicationDbContext context,
                               UserManager<IdentityUser> userManager,
                               IUserData userData,
-                              ILogger logger)
+                              ILogger<UserController> logger)
         {
             _context = context;
             _userManager = userManager;
