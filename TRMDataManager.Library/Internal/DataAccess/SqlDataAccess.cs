@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -12,10 +13,17 @@ namespace TRMDataManager.Library.Internal.DataAccess
 {
     internal class SqlDataAccess : IDisposable
     {
+        private readonly IConfiguration _config;
+        public SqlDataAccess(IConfiguration config)
+        {
+            _config = config;
+        }
         public string GetConnectionString(string name)
         {
-            // runs the web config from the API - TRMDataManager
-            return ConfigurationManager.ConnectionStrings[name].ConnectionString;
+            return _config.GetConnectionString(name);
+
+            // runs the web config from the API - TRMDataManager (old .NET Framework)
+            //return ConfigurationManager.ConnectionStrings[name].ConnectionString;
         }
 
         public List<T> LoadData<T, U>(string storedProcedure, U parameters, string connectionStringName)
@@ -71,6 +79,8 @@ namespace TRMDataManager.Library.Internal.DataAccess
 
         // close connection / stop transaction
         private bool isClosed = false;
+        
+
         public void CommitTransaction()
         {
             _transaction?.Commit();
