@@ -24,6 +24,7 @@ namespace TRMApi.Controllers
         }
 
         [Authorize(Roles = "Manager,Admin")] //???
+        [HttpGet]
         public List<InventoryModel> Get()
         {
             InventoryData data = new InventoryData(_config);
@@ -32,6 +33,7 @@ namespace TRMApi.Controllers
 
         //[Authorize(Roles = "WarehouseWorker")]  // you have to be both to post in this situation, the AND relationship (, = OR)
         [Authorize(Roles = "Admin")]
+        [HttpPost]
         public void Post(InventoryModel item)
         {
             InventoryData data = new InventoryData(_config);
