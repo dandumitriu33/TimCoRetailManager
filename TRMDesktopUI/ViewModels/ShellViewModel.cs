@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using TRMDesktopUI.EventModels;
 using TRMDesktopUI.Library.Api;
@@ -27,11 +28,11 @@ namespace TRMDesktopUI.ViewModels
             _salesVM = salesVM;
             _user = user;
             _apiHelper = apiHelper;
-            _events.Subscribe(this);
+            _events.SubscribeOnPublishedThread(this);
 
             // when deactivated the log in form will go away 
             // IoC is a thing Caliburn Micro brings in anyway, _container was too much
-            ActivateItem(IoC.Get<LoginViewModel>());
+            ActivateItemAsync(IoC.Get<LoginViewModel>(), new CancellationToken());
         }
 
         public bool IsLoggedIn
@@ -53,30 +54,36 @@ namespace TRMDesktopUI.ViewModels
 
         public void ExitApplication()
         {
-            TryClose();
+            TryCloseAsync();
         }
 
-        public void UserManagement()
+        public async Task UserManagement()
         {
-            ActivateItem(IoC.Get<UserDisplayViewModel>());
+            await ActivateItemAsync(IoC.Get<UserDisplayViewModel>(), new CancellationToken());
         }
 
-        public void LogOut()
+        public async Task LogOut()
         {
             _user.ResetUserModel();
             _apiHelper.LogOffUser();
-            ActivateItem(IoC.Get<LoginViewModel>());
+            await ActivateItemAsync(IoC.Get<LoginViewModel>(), new CancellationToken());
             NotifyOfPropertyChange(() => IsLoggedIn);
         }
 
-        public void Handle(LogOnEvent message)
-        {
-            ActivateItem(_salesVM);
-            NotifyOfPropertyChange(() => IsLoggedIn);
+        //public void Handle(LogOnEvent message)
+        //{
+        //    ActivateItem(_salesVM);
+        //    NotifyOfPropertyChange(() => IsLoggedIn);
 
-            //// if _loginVM was Dependency Injected to remember already filled in data
-            //// more useful for a cart
-            //_loginVM = _container.GetInstance<LoginViewModel>();
+        //    //// if _loginVM was Dependency Injected to remember already filled in data
+        //    //// more useful for a cart
+        //    //_loginVM = _container.GetInstance<LoginViewModel>();
+        //}
+
+        public async Task HandleAsync(LogOnEvent message, CancellationToken cancellationToken)
+        {
+            await ActivateItemAsync(_salesVM, cancellationToken);
+            NotifyOfPropertyChange(() => IsLoggedIn);
         }
 
 
